@@ -44,6 +44,11 @@ async function run() {
         // bids 
         const bidsCollections = client.db('SoloSphere').collection('bids')
 
+        app.post('bids',async(req,res)=>{
+            const bidData = req.body ;
+            const result = bidsCollections.insertOne(bidData)
+            res.send(result)
+        })
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
