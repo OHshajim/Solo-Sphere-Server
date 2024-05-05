@@ -40,11 +40,15 @@ async function run() {
             const result = await jobsCollections.findOne(query);
             res.send(result);
         })
-
+        app.post('/jobs',async(req,res)=>{
+            const jobData = req.body ;
+            const result = jobsCollections.insertOne(jobData)
+            res.send(result)
+        })
         // bids 
         const bidsCollections = client.db('SoloSphere').collection('bids')
 
-        app.post('bids',async(req,res)=>{
+        app.post('/bids',async(req,res)=>{
             const bidData = req.body ;
             const result = bidsCollections.insertOne(bidData)
             res.send(result)
