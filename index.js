@@ -34,22 +34,50 @@ async function run() {
             const result = await jobsCollections.find().toArray();
             res.send(result);
         })
-        app.get('/jobs/:id', async (req, res) => {
+        app.get('/job/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const result = await jobsCollections.findOne(query);
             res.send(result);
         })
-        app.post('/jobs',async(req,res)=>{
-            const jobData = req.body ;
+        app.get("/myJobs/:email", async (req, res) => {
+            const email = req.params.email;
+            const query = { "buyer.Email": email }
+            const result = await jobsCollections.find(query).toArray();
+            res.send(result);
+        })
+        app.put('/myJob/:id', async (req, res) => {
+            const id = req.params.id;
+            const jobData = req.body;
+            const query = { _id: new ObjectId(id) }
+            const option = { upsert: true }
+            const JobUpdate = {
+                $set: {
+                    ...jobData
+                }
+            }
+            const result = await jobsCollections.updateOne(query, JobUpdate, option);
+            res.send(result);
+        })
+        app.delete('/myJobs/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await jobsCollections.deleteOne(query);
+            res.send(result);
+        })
+
+        // add data 
+        app.post('/jobs', async (req, res) => {
+            const jobData = req.body;
             const result = jobsCollections.insertOne(jobData)
             res.send(result)
         })
+
         // bids 
         const bidsCollections = client.db('SoloSphere').collection('bids')
 
-        app.post('/bids',async(req,res)=>{
-            const bidData = req.body ;
+        app.post('/bids', async (req, res) => {
+            const bidData = req.body;
             const result = bidsCollections.insertOne(bidData)
             res.send(result)
         })
